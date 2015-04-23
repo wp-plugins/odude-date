@@ -1,4 +1,4 @@
-=== ODude Date (Calendar) ===
+=== ODude Date ===
 
 Contributors: odude
 
