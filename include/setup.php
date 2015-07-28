@@ -45,7 +45,7 @@ function install_table_odudedate()
 	$wpdb->query($qry);
 	
 	$qry="INSERT INTO `".$tablename2."` (`gid`, `gname`, `code_name`, `timezone`, `info`) VALUES
-(1, 'All Group', 'all', 'America/Mexico_City', 'No Information');";
+(1, 'Common Group', 'all', 'America/Mexico_City', 'No Information');";
 
 $wpdb->query($qry);
 	

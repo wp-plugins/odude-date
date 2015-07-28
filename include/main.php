@@ -1,4 +1,22 @@
 <?php
+function odudedate_ical()
+{
+	if(get_option('xmlon')=='on')
+		{
+	$uploaddir = wp_upload_dir();
+	
+	$dpath = '<a href="'.$uploaddir['baseurl'].'/odude-date/'.get_option('xmlpwd').'.ics" class="pure-button">Subscribe to Calendar</a>';
+	$pic = '<a href="'.$uploaddir['baseurl'].'/odude-date/'.get_option('xmlpwd').'.ics" title="Download file"><img src="'.plugins_url().'/odude-date/css/images/link.png" border="0" ></a>';
+	$opath=str_replace("http","webcal",$dpath);
+	return $opath."&nbsp;".$pic;
+		}
+		else
+		{
+				return "";
+		}
+}
+add_shortcode('odudedate_ical','odudedate_ical');
+
 function search_odude_calendar($atts)
 {
 global $wp_query;
@@ -7,6 +25,7 @@ global $keylink;
 global  $site_url;
 $uploaddir = wp_upload_dir();
 $user = wp_get_current_user();
+/*
 $f='
 
 <script>
@@ -17,12 +36,30 @@ location.href=url;
 return false;
 }
 </script>
-<form onSubmit="return process();">
+<form onSubmit="return process();" id="searchform" class="clearfix">
 
 <input type="text" class="field" name="url" id="url" placeholder="search here ..."> <input type="submit" class="submit" value="go">
 </form>
 
 <hr>';	
+*/
+
+$f='
+<script>
+function process()
+{
+var url="'.$site_url.'search/" + document.getElementById("s").value;
+location.href=url;
+return false;
+}
+</script>
+<form onSubmit="return process();" id="searchform" class="clearfix">
+	<label for="s" class="assistive-text">Search</label>
+	<input type="text" class="field" name="s" value="" id="s" placeholder="Search …">
+	<input type="submit" class="submit" name="submit" id="searchsubmit" value="Go">
+</form><br>
+
+';
 
 	if(isset($wp_query->query_vars['scountry']))
 	{
@@ -129,12 +166,14 @@ $extra3
 						
 					}
 					$f.="</div>";
-					$f.="<h3>Addtional Results: <a href='".$site_url."?s=$term&submit=Go'>Click here</a></h3>";
+					$f.="<h6>Look into more places ?: <a href='".$site_url."?s=$term&submit=Go'>Click here</a></h6>";
+					//$f.="<h6>Additional Results:</h6>".get_search_link( $term );
 					return $f;
 				}
 				else
 				{
-					$f.="<h3>Addtional Results: <a href='".$site_url."?s=$term&submit=Go'>Click here</a></h3>";
+					$f.="<h6>Additional Results: <a href='".$site_url."?s=$term&submit=Go'>Click here</a></h6>";
+					//	$f.="<h6>Additional Results:</h6>".get_search_link( $term );
 					return $f."No Result Found";
 				}
 
@@ -163,6 +202,7 @@ global $wp_query;
 global $wpdb;
 global  $site_url;
 global $keylink;
+global $gcountry;
 $uploaddir = wp_upload_dir();
 if(isset($wp_query->query_vars['sid']))
 {
@@ -206,11 +246,45 @@ $year="";
 				$day=$val->day;
 				$month=$val->month;
 				$year=$val->year;
-				
-					if($year=="0")
+				if($year=="0")
 					$year=date('Y');
 				
+				
+						$datefor="$year-$month-$day";
+						$datetime = new DateTime($datefor);
+						$iday=$datetime->format("d");
+						$imonth=$datetime->format("m");
+						$iyear=$datetime->format("Y");
+						$dateforX="$iyear$imonth$iday";
+				
+						$datefor="$year-$month-$day";
+						$datetime = new DateTime($datefor);
+						$datetime->modify('+1 day');
+						$iday=$datetime->format("d");
+						$imonth=$datetime->format("m");
+						$iyear=$datetime->format("Y");
+						$dateforY="$iyear$imonth$iday";
+				
+				global $xday;
+				global $xmonth;
+				global $xyear;
+				
+				$xday=$val->day;
+				$xmonth=$val->month;
+				$xyear=$val->year;
+				
+					
+				
+				
 				$country=$val->country;
+
+					
+				if($country=='all')
+				$gcountry=cookieCon();
+				else				
+				$gcountry=$country;
+				
+				
 				$event_desc=$val->event_desp;
 				$link=$val->link;
 				$category=$val->category;
@@ -227,8 +301,10 @@ $year="";
 				
 				$share='<a href="https://www.facebook.com/sharer.php?u=http://'.$_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"].'" target="_blank"><img src="'.plugins_url().'/odude-date/css/images/facebook_share.gif"></a>';
 				
+				$google='<a href="http://www.google.com/calendar/event?action=TEMPLATE&text='.$event.'&details='.$extra1.' '.$extra2.'&trp=false&sprop=&sprop=name:&dates='.$dateforX.'/'.$dateforY.'" target="_blank" rel="nofollow"><img src="'.plugins_url().'/odude-date/css/images/google.gif"></a>';
+				
 				$flag=do_shortcode('[odude_flag group="'.$country.'" size="ico" page=""]');
-				$explore='<a href="'.$site_url.'calendar/'.$day.'/'.$month.'/'.$year.'/'.$country.'/" class="pure-button pure-button-primary">Explore '.$day.'/'.$month.'/'.$year.'</a>';
+				$explore='<a href="'.$site_url.'calendar/'.$day.'/'.$month.'/'.$year.'/'.$country.'/" class="pure-button">Explore '.$day.'/'.$month.'/'.$year.'</a>';
 				
 				if($extra3=="")
 				{
@@ -248,16 +324,16 @@ $year="";
 					{
 						if (strpos($link, $keylink) !== false)
 						{
-						$butt="<a href='$link' class=\"pure-button pure-button-primary\">More Details</a>";
+						$butt="<br><a href='$link' class=\"pure-button pure-button-primary\">More Details</a>";
 						
 						}
 						else
 						{
 						$pic = plugins_url().'/odude-date/css/images/link.png';
-						$butt="<a href='$link' class=\"pure-button pure-button-primary\" target='_blank'>More Details</a> <img src='$pic'>";
+						$butt="<br><a href='$link' class=\"pure-button pure-button-primary\" target='_blank'>More Details</a> <img src='$pic'>";
 						}
 					} 
-				$f.="<br><blockquote class=\"bq2\"><center><h2>".$event."</h2>$extra1 $extra2<br>$extra3<b>$day/$month/$year </b> $flag $share</center><br>".nl2br(htmlspecialchars_decode($event_desc))."<br>$holiday $butt $explore</blockquote></div>";		
+				$f.="<br><blockquote class=\"bq2\"><center><h6>".$event."</h6>$extra1 $extra2<br>$extra3<b>$day/$month/$year </b> <br>$flag $share $google</center><br>".nl2br(htmlspecialchars_decode($event_desc))."<br>$holiday $butt $explore</blockquote></div>";		
 				if ( is_super_admin()  ) 
 					{
 					
@@ -296,11 +372,66 @@ $year="";
 }
 add_shortcode('detail_odude_calendar','detail_odude_calendar');
 
-function date_main($atts)
+function odude_group_name($atts)
+{
+	global $gcountry;
+	global $default_code;
+	
+	if($atts['group']=='')
+		{
+			if(is_home())
+			{
+				
+			
+				$country=cookieCon();
+			}
+			else
+			{
+				if($gcountry=='')
+					$country=$default_code;
+				else
+					$country=$gcountry;
+			}
+		}
+	else
+		{
+		$country=$atts['group'];
+		}
+		
+	return ODudeGroup('gname',$country,'admin');
+}
+add_shortcode('odude_group_name','odude_group_name');
+
+function date_front($atts)
 {
 global $wp_query;
 global $wpdb;
 
+$datefor=date('Y')."-".date('m')."-".date('d');	
+$country=cookieCon();
+$zone=zoneName($country);
+date_default_timezone_set($zone);
+$curtime=date("F d, Y H:i:s", time());
+//$flag=do_shortcode('[odude_flag group="'.$country.'" size="ico" page=""]');
+
+//$disp="<b>".iso2long($datefor)."</b> <br>(".odude_time_ago( $datefor ).")";
+//$disp.="<hr>Country Code:".$country;
+//$disp.="<hr>Country Name:".conName($country);
+//$disp.="<hr>Zone Name:".$zone;
+//$disp.="<hr>Current Time:".$curtime;
+//$disp.="<hr>Flag:".$flag;
+
+//$disp.= getEventsBox($day,$month,$year,$country,'general');
+	$disp.=getEventsBoxSingle($day,$month,$year,$country,'general');
+return $disp;
+}
+add_shortcode('odude_date_front','date_front');
+
+function date_main($atts)
+{
+global $wp_query;
+global $wpdb;
+global $gcountry;
 
 
 if(isset($wp_query->query_vars['sday']) && isset($wp_query->query_vars['smonth']) && isset($wp_query->query_vars['syear']))
@@ -314,6 +445,8 @@ if(isset($wp_query->query_vars['sday']) && isset($wp_query->query_vars['smonth']
 		$year=date('Y');
 	$country=$wp_query->query_vars['scountry'];
 	
+	$gcountry=$country;
+	
 	$datefor="$year-$month-$day";
 		if($day=='' && $month=='' && $year=='')
 		{
@@ -326,7 +459,7 @@ if(isset($wp_query->query_vars['sday']) && isset($wp_query->query_vars['smonth']
 }
 else if(isset($wp_query->query_vars['sid']) && isset($wp_query->query_vars['syear']))
 {
-
+	//don't delete this. It looks wrong but works. :)
 	return do_shortcode('[detail_odude_calendar group="US"]');
 
 }
@@ -351,7 +484,8 @@ else
 		{
 		 $datefor=date('Y')."-".date('m')."-".date('d');	
 		}
-	$disp="<center><b>".iso2long($datefor)."</b> <br>(".odude_time_ago( $datefor ).")</center><hr>";
+		$disp="";
+	//$disp="<center><b>".iso2long($datefor)."</b> <br>(".odude_time_ago( $datefor ).")</center><hr>";
 	//$disp.="<div class=\"pure-g-r\">";
 	//$disp.="<div class=\"pure-u-2\">";
 	//include(ODUDEDATE_PLUGIN_DIR . '/layout/general_top.php');
@@ -462,7 +596,7 @@ add_shortcode('odude_other','date_other');
 function odude_calendar($atts)
 {
 global $wp_query;
-
+global $gcountry;
 if(isset($wp_query->query_vars['sday']))
 {
 $day=$wp_query->query_vars['sday'];
@@ -472,7 +606,35 @@ $country=$wp_query->query_vars['scountry'];
 }
 else
 {
+	
+	if($atts['group']=='')
+		{
+			if(is_home())
+			{
+			
+				$country=cookieCon();
+			}
+			else
+			{
+				$country=$gcountry;
+			}
+		}
+	else
+		{
+		$country=$atts['group'];
+		}
 
+	/*
+		if($atts['group']=='')
+		{
+			$country=cookieCon();
+		}
+			else
+		{
+		$country=$atts['group'];
+		}
+	*/	
+		/*
 		if(is_home())
 		{
 			$country=cookieCon();
@@ -481,6 +643,7 @@ else
 		{
 			$country=$atts['group'];
 		}
+		*/
 
 $day="";
 $month="";
@@ -557,44 +720,50 @@ add_shortcode('odude_date_search','date_search');
 
 function odude_time($atts)
 {
-$zone=$atts['zone'];
-	if(is_home() || $zone=="")
-	{
-		if(isset($_COOKIE["odude_cal_zone"]))
-		{
-		$zone=$_COOKIE["odude_cal_zone"];
-		}
-		else
-		{
-		$zone='America/New_York';
-		}
-		
-		
-	}
 	
-	
-date_default_timezone_set($zone);
-$curtime=date("F d, Y H:i:s", time());
+$country=cookieCon();
 
-$f="24Hr. Clock of <b>".$zone."</b><br>";
+			if($atts['zone']=='')
+			{
+			$zone=zoneName($country);
+			}
+			else
+			{
+			$zone=$atts['zone'];
+			}
+
+
+date_default_timezone_set($zone);
+$datefor=date('Y')."-".date('m')."-".date('d');	
+
+$curtime=date("F d, Y H:i:s", time());
+$f="";
+//$f="24Hr. Clock of <b>".$zone."</b><br>";
 $f.='<script type="text/javascript">
 
 var currenttime = "'.$curtime.'" //PHP method of getting server date
 
 var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
 var serverdate=new Date(currenttime)
-
+var diem = "AM";
+var h = serverdate.getHours();
+if (h == 0) {
+    h = 12;
+  } else if (h > 12) {
+    h = h - 12;
+    diem = "PM"
+  }
 function padlength(what){
 var output=(what.toString().length==1)? "0"+what : what
 return output
 }
 
 function displaytime(){
-serverdate.setSeconds(serverdate.getSeconds()+1)
-var datestring=montharray[serverdate.getMonth()]+" "+padlength(serverdate.getDate())+", "+serverdate.getFullYear()
-var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+":"+padlength(serverdate.getSeconds())
-//document.getElementById("servertime").innerHTML=datestring+"<br> "+timestring
-document.getElementById("servertime").innerHTML=timestring
+serverdate.setSeconds(serverdate.getSeconds()+1);
+var datestring=montharray[serverdate.getMonth()]+" "+padlength(serverdate.getDate())+", "+serverdate.getFullYear();
+var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+":"+padlength(serverdate.getSeconds())+" "+diem;
+//document.getElementById("odude_servertime").innerHTML=datestring+"<br> "+timestring;
+document.getElementById("odude_servertime").innerHTML=timestring;
 }
 
 window.onload=function(){
@@ -602,11 +771,9 @@ setInterval("displaytime()", 1000)
 }
 
 </script>
-<style>
-.servertime { width: 100%; height:70px; text-align:center; overflow: hidden; border: 1px solid #dde5ed; background: #f8fafd; color: #758fa3;font-weight: bold; font-size: 50px; text-shadow: 0px 1px 0px #000000; }
-</style>
-<div class="servertime"><br><span id="servertime"></span></div>';
 
+<div class="odude_servertime"><span id="odude_servertime"></span></div>
+<div class="odude_serverdate"><span id="odude_serverdate"></span>'.iso2long($datefor).' '.$zone.'</div>';
 
 return $f;
 
@@ -669,9 +836,13 @@ return $curtime. " GMT ".$datetime->format('P');
 //Just displays static time. No animation.  [odude_static_time zone="Asia/Kathmandu"]
 add_shortcode('odude_static_time','odude_static_time');
 
-function odude_sethome($atts)
+function odude_sethome_button($atts)
 {
 global  $site_url;
+global $gcountry;
+global $gzone;
+$gcountry=$atts['group'];
+$gzone=$atts['zone'];
 $zone=$atts['zone'];
 $country=$atts['group'];
 
@@ -679,16 +850,19 @@ return "<a href='".$site_url."?default=$country&zone=$zone' class='pure-button p
 
 }
 //Its add a set home button [odude_sethome country="NP" zone="Asia/Kathmandu"]
-add_shortcode('odude_sethome','odude_sethome');
+add_shortcode('odude_sethome_button','odude_sethome_button');
+
+
 
 function odude_flag($atts)
 {
 global $wp_query;
+global $gcountry;
 $country=$atts['group'];
 $size=$atts['size'];
 $page=$atts['page'];
 
-
+	/*
 		if($atts['page']=='page')
 		{
 			if(isset($wp_query->query_vars['scountry']))
@@ -706,6 +880,25 @@ $page=$atts['page'];
 			{
 				$country=cookieCon();
 			}
+		}
+		*/
+		
+	
+	if($atts['group']=='')
+		{
+			if(is_home())
+			{
+			
+				$country=cookieCon();
+			}
+			else
+			{
+				$country=$gcountry;
+			}
+		}
+	else
+		{
+		$country=$atts['group'];
 		}
 
 //$pic = plugins_url()."/odude-date/css/images/".$size."_".$country.".png";
@@ -778,7 +971,7 @@ $getgalimages = $wpdb->get_results($sql);
 		{
 		//$getgalimages = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."odudedate WHERE `category`='$type' and country='$country' and month='$month' and year='$year' and Publish='1' order by day");
 		
-		$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE `category`=%s and country=%s and month=%d and year=%d and Publish='1' order by day",array($type,$country,$month,$year));
+		$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE `category`=%s and country=%s and month=%d and year=%d and Publish='1' and event!='' order by day",array($type,$country,$month,$year));
 $getgalimages = $wpdb->get_results($sql);	
 
 		}
@@ -794,16 +987,15 @@ return false;
 }
 </script>
 <form onSubmit="return process();">
-
+<table  border=0 ><tr><td width="20%">
 <select id="month" name="month"><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
-<select id="year" name="year">
+</td><td width="15%"><select id="year" name="year">
 <option value="2015">2015</option>
 <option value="2016">2016</option>
-</select> <input type="submit" class="submit" value="view">
+</select></td><td> <input type="submit" class="submit" value="view"></td></tr></table>
 </form>
-
-<hr>';	
-$disp.="<b>".conName($country)." - ".monthName($month)."</b>";
+';	
+$disp.="<h6>".conName($country)." - ".monthName($month)."</h6>";
 //$disp.="<br><a title='January' href='".$site_url."holiday/1/$year/$country/'>JAN</a> | <a title='February' href='http://datetimenow.com/holiday/2/$year/$country/'>FEB</a> | <a title='March' href='http://datetimenow.com/holiday/3/$year/$country/'>MAR</a> | <a title='April' href='http://datetimenow.com/holiday/4/$year/$country/'>APR</a> | <a title='May' href='http://datetimenow.com/holiday/5/$year/$country/'>MAY</a> | <a title='June' href='http://datetimenow.com/holiday/6/$year/$country/'>JUN</a> | <a title='July' href='http://datetimenow.com/holiday/7/$year/$country/'>JUL</a> | <a title='August' href='http://datetimenow.com/holiday/8/$year/$country/'>AUG </a>| <a title='September' href='http://datetimenow.com/holiday/9/$year/$country/'>SEP</a> | <a title='October' href='http://datetimenow.com/holiday/10/$year/$country/'>OCT</a> |<a title='November' href='http://datetimenow.com/holiday/11/$year/$country/'>NOV</a> | <a title='December' href='http://datetimenow.com/holiday/12/$year/$country/'>DEC</a> $year <br>";
 			if(count($getgalimages))
 			{
@@ -843,14 +1035,14 @@ $disp.="<b>".conName($country)." - ".monthName($month)."</b>";
 				
 				if($type=='celeb')
 				{
-				$disp.="<tr><td>$day/$month/$year</td><td>$extra3</td><td><b>$event</b></td><td>".odude_time_ago($datefor)."</td><td><a href=\"".$site_url."calendar/$day/$month/$year/$country/\" class=\"pure-button pure-button-primary\">View</a></td></tr>";
+				$disp.="<tr><td>$day/$month/$year</td><td>$extra3</td><td><b>$event</b></td><td>".odude_time_ago($datefor)."</td><td><a href=\"".$site_url."calendar/$day/$month/$year/$country/\" class=\"pure-button\">View</a></td></tr>";
 				}
 				else
 				{
 				
 					
 				
-				$disp.="<tr><td>$day/$month/$year</td><td></td><td><b>$event</b></td><td>".odude_time_ago($datefor)."</td><td><a href=\"".$site_url."calendar/$day/$month/$year/$country/\" class=\"pure-button pure-button-primary\">View</a></td></tr>";
+				$disp.="<tr><td>$day/$month/$year</td><td></td><td><b>$event</b></td><td>".odude_time_ago($datefor)."</td><td><a href=\"".$site_url."calendar/$day/$month/$year/$country/\" class=\"pure-button\">View</a></td></tr>";
 				
 				}
 				}

@@ -6,7 +6,7 @@
 Plugin Name: ODude Date (Calendar)
 Plugin URI: http://odude.com/
 Description: Listing events as calendar.
-Version: 1.0.0
+Version: 1.1.0
 Author: ODude Network
 Author URI: http://odude.com/
 License: GPLv2 or later
@@ -29,7 +29,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-define( 'ODUDEDATE_VERSION', '1.0.0' );
+define( 'ODUDEDATE_VERSION', '1.1.0' );
 define( 'ODUDEDATE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ODUDEDATE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ODUDEDATE_TEMPLATES_PATH', ODUDEDATE_PLUGIN_DIR . 'templates' );
@@ -113,8 +113,7 @@ require_once(ODUDEDATE_PLUGIN_DIR . '/include/dash.php');
 function odudedatecreatemenu()
 {
 	
-	add_menu_page( 'ODude Date', 'ODude Date', 'manage_options', 'odudedate_dash', 'odudedate_dash',  plugins_url( 'icon.png', __FILE__ ), 6 );
-	//add_menu_page( 'ODude Date', 'ODude Date', 'manage_options', 'odudedate_dash', 'odudedate_dash', plugins_url( 'odude-date/icon.png' ), 6 );
+	add_menu_page( 'ODude Date', 'ODude Date', 'manage_options', 'odudedate_dash', 'odudedate_dash', plugins_url( 'odude-date/icon.png' ), 6 );
 	add_submenu_page( 'odudedate_dash', 'Post', 'Post', 'manage_options', 'odudedate', 'odudedate' );
 	add_submenu_page( 'odudedate_dash', 'Last Updated', 'Last Updated', 'manage_options', 'odudedate_stats', 'odudedate_stats' );
 	add_submenu_page( 'odudedate_dash', 'Settings', 'Settings', 'manage_options', 'odudedate_setting', 'odudedate_setting' );
@@ -235,7 +234,6 @@ global $wp_query;
 global $wpdb;
 global  $site_url;
 global $pro_active;
-$upload_dir = wp_upload_dir();
 
 if (is_page('calendar'))
 {
@@ -269,13 +267,13 @@ if (is_page('calendar'))
 				$id=$val->id;
 				if($extra3!="")
 				{
-				//$extra3='<meta property="og:image" content="'.$site_url.'wp-content/uploads/odude-date/'.$id.'.jpg"/>';
-				$extra3='<meta property="og:image" content="'.$upload_dir['baseurl'].'/odude-date/'.$id.'.jpg"/>';
+				$extra3='<meta property="og:image" content="'.$site_url.'wp-content/uploads/odude-date/'.$id.'.jpg"/>';
 				}
 				else
 				{
 					if($pro_active=='1')
 					$extra3='<meta property="og:image" content="'.dynamicImage($event,$id,false).'"/>';
+
 				}
 				
 			

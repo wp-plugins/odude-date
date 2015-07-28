@@ -1,8 +1,8 @@
-=== ODude Date ===
+=== ODude Date (Calendar) ===
 
 Contributors: odude
 
-Tags: event, events, calendar, calender, holiday, routine, schedule, date, time, button
+Tags: event, events, calendar, calender, holiday, routine, schedule, date, time
 
 Donate Link: http://www.odude.com
 
@@ -10,27 +10,23 @@ Requires at least: 3.8
 
 Tested up to: 4.0
 
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 
 License: GPLv3
 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 
-Calendar button for your website. 
+A Simple Event Management
 
 
 == Description ==
 
-= What can we do with ODude Date? =
+= What is ODude Date? =
 
-It is very useful plugin and this concept is used in millions of site in different styles.
+ODude Date is a calendar based event management system. It is very simple to use and very advance in features.
 
-This will simply create a menu called calender which will display the traditional style calendar. Each date may have some details with pictures.
-
-It is mostly used by those organisation where calendar is most required. For eg. schools, clubs etc.
-
-Do not compare with other event management plugins because it is different than others. It is custom build plugin for some of our clients and many enhancement has been done. It is fully focused on event, schedule, appointment, holiday on particular date.
+Do not compare with other event mangement plugins because it is different than orthers. It is custom build plugin for some of our clients and many enhancement has been done. It is fully foced on event,schedule, appointment, holiday, on particular date.
 
 Click here for <a href=http://www.odude.com/wordpress>More Information</a>
 
@@ -43,7 +39,7 @@ Click here for <a href=http://www.odude.com/wordpress>More Information</a>
 * Can mark some days as RED and other recorded events as GREEN color.
 * Ability to link particular event to the post page dynamically.
 * 100% Search Engine Friendly. (SEO)
-* Facebook meta tags maintained.
+* Facebook meta tags mentained.
 * Extra settings for sharing at Facebook.
 * Everything is based on shortcode. You can use it anywhere at your site.
 
@@ -76,20 +72,16 @@ Click on the link to see the <a href="http://datetimenow.com/" target="_blank">L
    
    Just copy past any JPEG Image URL starting with http. It will automatically download it locally and make appropriate thumbnail.
    
-= 2. How can I find detail documentation ? =
-   Click on this URL http://odude.com/wordpress/   
+   
    
 ==  Screenshots ==
 
-1. ODude Date plugin calendar interface
-2. Detail  view of calendar
-3. Ability to show local live time of anywhere
-4. View event list of particular month.
-5. Search Results.
+1. ODude Ecard plugin home page.
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.1.0 =
+Added lots of shortcodes. Read at odude.com
 
 == Upgrade Notice ==
 

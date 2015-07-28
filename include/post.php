@@ -48,13 +48,30 @@ if($edit!="")
 			?>
 			
 							<h1>Editing (<?php echo $username; ?>)</h1>
-				<form method="get" action="">
-				<input type="hidden" name="page" value="<?php echo $mypage; ?>">
-				<input type="hidden" name="id" value="<?php echo $edit; ?>">
-				<input type="hidden" name="check" value="update">
-				Event Title: <input type="text" name="event" value="<?php echo $getres[0]->event; ?>"><br>
-				Event Description: 
-				<?php
+							
+							<form method="get" action="">
+								<input type="hidden" name="page" value="<?php echo $mypage; ?>">
+								<input type="hidden" name="id" value="<?php echo $edit; ?>">
+								<input type="hidden" name="check" value="update">
+								<table class="form-table">
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Event Title:</label>
+									</th>
+								 
+									<td>
+										<input type="text" value="<?php echo $getres[0]->event; ?>" id="event" name="event" class="regular-text">
+										<br>
+										<span class="description">Topic of the event</span>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Event Description</label>
+									</th>
+								 
+									<td>
+									  <?php
 				$content = $getres[0]->event_desp;
 				$editor_id = 'event_desp';
 				$args = array(
@@ -66,13 +83,58 @@ if($edit!="")
 				wp_editor( $content, $editor_id, $args);
 
 				?>
-				Extra1 : <input type="text" name="extra1" value="<?php echo $getres[0]->extra1; ?>"><br>
-				Extra2 : <input type="text" name="extra2" value="<?php echo $getres[0]->extra2; ?>"><br>
-				
 
-			
-				
-				<select name="day">
+									</td>
+								</tr>
+
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Extra1 :</label>
+									</th>
+								 
+									<td>
+										<input type="text" name="extra1" value="<?php echo $getres[0]->extra1; ?>">
+										
+										<span class="description">Just single line extra information below the topic.</span>
+									</td>
+								</tr>
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Extra2 :</label>
+									</th>
+								 
+									<td>
+										 <input type="text" name="extra2" value="<?php echo $getres[0]->extra2; ?>">
+										
+										<span class="description">Short single line extra information displayed along with topic.</span>
+									</td>
+								</tr>
+
+
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Image URL :</label>
+									</th>
+								 
+									<td>
+										 <input type="text" name="extra3" class="regular-text" value="<?php echo $getres[0]->extra3; ?>">
+										<br>
+										<span class="description">Eg. http://www.google.com/abc.jpg<br>(Remote image will be locally saved with new thumbnail)</span>
+									</td>
+								</tr>
+
+
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Scheduled date</label>
+									</th>
+								 
+									<td>
+										<select name="day">
 				<option value="01" <?php if ($getres[0]->day=='1') echo 'selected="selected"';?>>01</option>
 				<option value="02" <?php if ($getres[0]->day=='2') echo 'selected="selected"';?>>02</option>
 				<option value="03" <?php if ($getres[0]->day=='3') echo 'selected="selected"';?>>03</option>
@@ -128,44 +190,108 @@ if($edit!="")
 				<option value="2016" <?php if ($getres[0]->year=='2016') echo 'selected="selected"';?>>2016</option>
 				<option value="0" <?php if ($getres[0]->year=='0') echo 'selected="selected"';?>>Repeat</option>
 				</select>
-				<br><hr>
+										<br>
+										<span class="description">All events are treated as full day event.</span>
+									</td>
+								</tr>
 
-				Group:
-			
-				 <?php echo ODudeGroup('all','all','admin','country',$getres[0]->country); ?>
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Group or Category:</label>
+									</th>
+								 
+									<td>
+										   <?php echo ODudeGroup('all','all','admin','country',$getres[0]->country); ?>
+										<br>
+										<span class="description">Choose appropriate group.<br>If (COMMON GROUP) is chosen the event will appear in all the group.</span>
+									</td>
+								</tr>
+
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Link :</label>
+									</th>
+								 
+									<td>
+										  <input type="text" name="link" class="regular-text" value="<?php echo $getres[0]->link; ?>">
+										<br>
+										<span class="description">Eg. http://www......... (Linking event to other website or own article.) <br> It will be linked with [More Deatail] button at article page.</span>
+									</td>
+								</tr>
+
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Make RED :</label>
+									</th>
+								 
+									<td>
+										<select id="holiday" name="holiday">
+										<option value="0" <?php if ($getres[0]->Holiday=='0') echo 'selected="selected"';?> >No</option>
+										<option value="1" <?php if ($getres[0]->Holiday=='1') echo 'selected="selected"';?> >YES</option>
+										</select> 
+										<br>
+										<span class="description">red.png will appear and calendar will be marked with RED box</span>
+									</td>
+								</tr>
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Tag as:</label>
+									</th>
+								 
+									<td>
+										 	<select id="category" name="category">
+											<option value="general" <?php if ($getres[0]->category=='general') echo 'selected="selected"';?>>General</option>
+											<option value="celeb" <?php if ($getres[0]->category=='celeb') echo 'selected="selected"';?>>Celeb</option>
+											<option value="extra" <?php if ($getres[0]->category=='extra') echo 'selected="selected"';?>>Extra</option>
+											</select>
+										<br>
+										<span class="description">GENERAL: It is treated as main event. Green box will appear for each entry at calendar.<br>
+																	CELEB: It is specially for person/people. Eg. Celebrities birthday or Anniversary. No colours at calendar.<br>
+																	EXTRA: It is just a extra. No colours will be changed at calendar. </span>
+									</td>
+								</tr>
+
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Publish this event:</label>
+									</th>
+								 
+									<td>
+										 <select id="publish" name="publish">
+											<option value="0" <?php if ($getres[0]->Publish=='0') echo 'selected="selected"';?> >No</option>
+											<option value="1" <?php if ($getres[0]->Publish=='1') echo 'selected="selected"';?> >YES</option>
+											</select>
+										<br>
+										<span class="description">It just means you want to hide or show this event.</span>
+									</td>
+								</tr>
+								
+								<tr>
+									<th scope="row">
+										<label for="my-text-field">Delete this event:</label>
+									</th>
+								 
+									<td>
+										  <select id="delete" name="delete">
+										<option value="no">No</option>
+										<option value="yes">Yes</option>
+										</select>
+										<br>
+										<span class="description">This will delete the event along with image. It cannot be reverted back.</span>
+									</td>
+								</tr>
+
+								</table>
+								 <p class="submit"><input type="submit" value="Submit Event" class="button-primary" name="Submit"></p>
+								</form>
+							
+							
+							
 				
-				<br>
-				Link URL: <input type="text" name="link" value="<?php echo $getres[0]->link; ?>" size='75'><br>
-				Image URL : <input type="text" name="extra3" value="<?php echo $getres[0]->extra3; ?>" size='75'><br><hr>
-				
-				Make RED :
-				
-				<select id="holiday" name="holiday">
-				<option value="0" <?php if ($getres[0]->Holiday=='0') echo 'selected="selected"';?> >No</option>
-				<option value="1" <?php if ($getres[0]->Holiday=='1') echo 'selected="selected"';?> >YES</option>
-				</select> (red.png will appear and calendar will be marked with RED box)<br>
-				<br>
-				
-				Layout:
-				<select id="category" name="category">
-				<option value="general" <?php if ($getres[0]->category=='general') echo 'selected="selected"';?>>General</option>
-				<option value="celeb" <?php if ($getres[0]->category=='celeb') echo 'selected="selected"';?>>Celeb</option>
-				<option value="extra" <?php if ($getres[0]->category=='extra') echo 'selected="selected"';?>>Extra</option>
-				</select><br><br>
-				
-				Publish:
-				
-								<select id="publish" name="publish">
-								<option value="0" <?php if ($getres[0]->Publish=='0') echo 'selected="selected"';?> >No</option>
-								<option value="1" <?php if ($getres[0]->Publish=='1') echo 'selected="selected"';?> >YES</option>
-								</select><br><br>
-				Delete:
-				<select id="delete" name="delete">
-				<option value="no">No</option>
-				<option value="yes">Yes</option>
-				</select><br><br>
-				<input type="submit">
-				</form>
 							
 							<?php
 			}
@@ -182,13 +308,33 @@ else
 
 ?>
 
+
+
+
+
 <h1>Posting (<?php echo $username; ?>) </h1>
 <form method="get" action="">
 <input type="hidden" name="page" value="<?php echo $mypage; ?>">
 <input type="hidden" name="check" value="post">
-Event Title: <input type="text" name="event"><br>
-Event Description:
-<?php
+<table class="form-table">
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Event Title:</label>
+    </th>
+ 
+    <td>
+        <input type="text" value="" id="event" name="event" class="regular-text">
+       
+        <span class="description">Topic of the event</span>
+    </td>
+</tr>
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Event Description</label>
+    </th>
+ 
+    <td>
+       <?php
 $content = '';
 $editor_id = 'event_desp';
 $args = array(
@@ -200,12 +346,58 @@ $args = array(
 wp_editor( $content, $editor_id, $args);
 
 ?>
-Extra1 : <input type="text" name="extra1"><br>
-Extra2 : <input type="text" name="extra2"><br>
-Image URL : <input type="text" name="extra3"> Eg. http://www.google.com/abc.jpg (Remote image will be locally saved with new thumbnail)<br><hr>
+
+    </td>
+</tr>
 
 
-<select name="day">
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Extra1 :</label>
+    </th>
+ 
+    <td>
+        <input type="text" name="extra1">
+       
+        <span class="description">Just single line extra information below the topic.</span>
+    </td>
+</tr>
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Extra2 :</label>
+    </th>
+ 
+    <td>
+         <input type="text" name="extra2">
+       
+        <span class="description">Short single line extra information displayed along with topic.</span>
+    </td>
+</tr>
+
+
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Image URL :</label>
+    </th>
+ 
+    <td>
+         <input type="text" name="extra3" class="regular-text">
+        <br>
+        <span class="description">Eg. http://www.google.com/abc.jpg<br>(Remote image will be locally saved with new thumbnail)</span>
+    </td>
+</tr>
+
+
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Scheduled date</label>
+    </th>
+ 
+    <td>
+         <select name="day">
 <option value="01">01</option>
 <option value="02">02</option>
 <option value="03">03</option>
@@ -244,24 +436,78 @@ Image URL : <input type="text" name="extra3"> Eg. http://www.google.com/abc.jpg 
 <option value="2015" selected>2015</option>
 <option value="2016">2016</option>
 <option value="0">Repeat</option>
-</select><br>
+</select>
+        <br>
+        <span class="description">All events are treated as full day event.</span>
+    </td>
+</tr>
 
-Group: <?php echo ODudeGroup('all','all','admin'); ?>
-<br>
-Link : <input type="text" name="link"> Eg. http://www......... (Linking event to other website or own site.)<br>
-Make RED : 
-<select id="holiday" name="holiday">
-<option value="0">No</option>
-<option value="1">YES</option>
-</select> (red.png will appear and calendar will be marked with RED box)<br>
-Layout:
-<select id="category" name="category">
-<option value="general">general</option>
-<option value="celeb">celeb</option>
-<option value="extra">extra</option>
-</select><br>
-<input type="submit" value="Submit Event">
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Group or Category:</label>
+    </th>
+ 
+    <td>
+          <?php echo ODudeGroup('all','all','admin'); ?>
+        <br>
+        <span class="description">Choose appropriate group.<br>If (COMMON GROUP) is chosen the event will appear in all the group.</span>
+    </td>
+</tr>
+
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Link :</label>
+    </th>
+ 
+    <td>
+          <input type="text" name="link" class="regular-text">
+        <br>
+        <span class="description">Eg. http://www......... (Linking event to other website or own article.) <br> It will be linked with [More Deatail] button at article page.</span>
+    </td>
+</tr>
+
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Make RED :</label>
+    </th>
+ 
+    <td>
+         <select id="holiday" name="holiday">
+		<option value="0">No</option>
+		<option value="1">YES</option>
+		</select> 
+        
+        <span class="description">red.png will appear and calendar will be marked with RED box</span>
+    </td>
+</tr>
+
+<tr>
+    <th scope="row">
+        <label for="my-text-field">Tag as:</label>
+    </th>
+ 
+    <td>
+         <select id="category" name="category">
+		<option value="general">general</option>
+		<option value="celeb">celeb</option>
+		<option value="extra">extra</option>
+		</select>
+        <br>
+        <span class="description">GENERAL: It is treated as main event. Green box will appear for each entry at calendar.<br>
+									CELEB: It is specially for person/people. Eg. Celebrities birthday or Anniversary. No colours at calendar.<br>
+									EXTRA: It is just a extra. No colours will be changed at calendar. </span>
+    </td>
+</tr>
+
+
+
+</table>
+ <p class="submit"><input type="submit" value="Submit Event" class="button-primary" name="Submit"></p>
 </form>
+
 
 <?php
 global $wpdb;

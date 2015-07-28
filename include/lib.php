@@ -31,10 +31,42 @@ function ODudeGroup($field,$code,$user,$formname='country',$selected='')
 				$f.='<option value="'.$default_code.'">'.$default_name.'</option>';
 			
 			}
+			
 			$f.="</select>";
 			return $f;
 		}
-		else if($field!="all" && $user="admin")
+		else if($field=="default" && $code=="all" && $user="admin")
+		{
+		$f='<select id="'.$formname.'" name="'.$formname.'">';
+		$getgalimages = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."odudedate_group");
+			if(count($getgalimages))
+			{
+			
+				foreach($getgalimages as $val)
+				{
+				$gname=$val->gname;
+				$code_name=$val->code_name;
+				
+				if($code_name==$selected)
+					$sel='selected="selected"';
+				else
+					$sel='';
+				
+				$f.='<option value="'.$code_name.'" '.$sel.'>'.$gname.'</option>';
+								
+				}
+				$f.='<option value="default" '.$sel.'>Default Group</option>';
+			}
+			else
+			{
+				$f.='<option value="'.$default_code.'">'.$default_name.'</option>';
+			
+			}
+			
+			$f.="</select>";
+			return $f;
+		}
+		else
 		{
 		
 		$sql = $wpdb->prepare("SELECT $field as field FROM ".$wpdb->prefix."odudedate_group where code_name=%s",array($code));
@@ -57,10 +89,7 @@ function ODudeGroup($field,$code,$user,$formname='country',$selected='')
 			}
 			
 		}
-		else
-		{
-			return "US";
-		}
+		
   }
 
 
@@ -273,7 +302,8 @@ $nmonth=1;
 $nyear=$year+1;
 }
 	// Draw table for Calendar 
-	$calendar = '<br><center><b>'.monthName($month).' '.$year.' - Calender of '.conName($country).'</b></center>';
+	$calendar = '<center><b>'.monthName($month).' '.$year.'</b></center>';
+	//$calendar = '<center><b>'.monthName($month).' '.$year.' - Calender of '.conName($country).'</b></center>';
 	$calendar .='<div style="width: 100%" ><center><a href="'.$site_url.'calendar/1/'.$pmonth.'/'.$pyear.'/'.$country.'/" class="pure-button"><div style="font-size: smaller;"><< '.monthName($pmonth).'</div></a> <a href="'.$site_url.'calendar/1/'.date('m').'/'.date('Y').'/'.$country.'/" class="pure-button"><div style="font-size: smaller;">#</div></a> <a href="'.$site_url.'calendar/1/'.$nmonth.'/'.$nyear.'/'.$country.'/" class="pure-button"><div style="font-size: smaller;">'.monthName($nmonth).' >></div></a></center></div>';
 	$calendar.='<div style="width: 98%"><table cellpadding="0" cellspacing="0" class="calendar">';
 
@@ -640,6 +670,140 @@ $f.=$g."</style>";
 		
   
   }
+  
+  function getEventsBoxSingle($day,$month,$year,$country,$category)
+  {
+	global $wpdb;
+	$datefor="$year-$month-$day";
+	global  $site_url;
+	global $keylink;
+	$uploaddir = wp_upload_dir();
+	
+
+		if($day=='' && $month=='' && $year=='')
+		{
+		 $datefor=date('Y')."-".date('m')."-".date('d');		
+		//$getgalimages = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."odudedate WHERE day = '".date('d')."' and month='".date('m')."' and (year='".date('Y')."' or year='0') and (country='$country' or country='all')and category='$category' and Publish='1'");
+		
+		$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE day = '".date('d')."' and month='".date('m')."' and (year='".date('Y')."' or year='0') and (country=%s or country='all')and category=%s and Publish='1'",array($country,$category));
+	$getgalimages = $wpdb->get_results($sql);
+		
+		
+		
+		}
+		else if($day=='' && $month!='' && $year!='')
+		{
+		
+		//$getgalimages = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."odudedate WHERE month='".$month."' and (year='".$year."' or year='0') and (country='$country' or country='all') and category='$category' and Publish='1'");
+		
+		$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE month='".$month."' and (year='".$year."' or year='0') and (country=%s or country='all') and category=%s and Publish='1'",array($country,$category));
+	$getgalimages = $wpdb->get_results($sql);
+		
+		
+		}
+		else
+		{
+			//$getgalimages = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."odudedate WHERE day = '$day' and month='$month' and (year='".$year."' or year='0') and (country='$country' or country='all') and category='$category' and Publish='1'");
+			
+			$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE day = %d and month=%d and (year=%d or year='0') and (country=%s or country='all') and category=%s and Publish='1'",array($day,$month,$year,$country,$category));
+	$getgalimages = $wpdb->get_results($sql);
+			
+		}
+		$f="";
+		
+		
+		//Displaying records
+		if(count($getgalimages))
+			{
+			
+				
+				
+				
+				foreach($getgalimages as $val)
+				{
+				
+				$event = $val->event;
+				$day=$val->day;
+				$link=$val->link;
+				$event_desc=$val->event_desp;
+				if($link=='')
+				$event_desc="";
+				
+			
+				$category=$val->category;
+				$id=$val->id;
+				$country=$val->country;
+				$extra1=$val->extra1;
+				
+				if($event=="" && $extra1!="")
+				$event="";
+				
+				$extra2=$val->extra2;
+				$extra3=$val->extra3;
+				$holiday=$val->Holiday;
+				if($holiday=='0')
+				$holiday="";
+				else
+				$holiday='<img src="'.plugins_url( '../css/images/red.png', __FILE__ ).'">';	
+							
+				
+				if($extra3=="")
+				{
+				$extra3="";
+				}
+				else
+				{
+						$imglink='<a href="'.$site_url.'calendar/'.$id.'/'.toSafeURL($event, "'").'">';
+						if (strpos($link, $keylink) !== false)
+						$imglink='<a href="'.$link.'">';
+				thumbImage($extra3,$id);
+				$extra3="<br>".$imglink."<img src='".$uploaddir['baseurl']."/odude-date/thumb_$id.jpg'></a>";
+				
+				}
+				
+				$butt="";
+				$newlink="";
+				if($event!="")
+				$newlink='<a href="'.$site_url.'calendar/'.$id.'/'.toSafeURL($event, "'").'">'.$event.'</a> ';
+				
+				
+					if($link!='')
+					{
+						if (strpos($link, $keylink) !== false)
+						{
+						$butt="<a href='$link' class=\"pure-button pure-button-primary\">More Details</a>";
+						if($event!="")
+						$newlink='<a href="'.$link.'">'.$event.'</a> ';
+						
+						}
+						else
+						{
+						$pic = plugins_url().'/odude-date/css/images/link.png';
+						$butt="<a href='$link' class=\"pure-button pure-button-primary\" target='_blank'>More Details</a> <img src='$pic'>";
+						}
+					} 
+				
+				
+				$f.='<div class="obox" style="text-align:center"><h2>'.$newlink.'</h2> <b>'.$extra1.'<br>'.$extra2.'</b>'.$extra3.'</div>';
+			}
+				
+
+				return $f;
+	
+			}
+			else
+			{
+				
+				return "";
+				
+			}
+		
+		
+  
+  }
+
+  
+  
   function odude_time_ago( $date )
 {
     if( empty( $date ) )
