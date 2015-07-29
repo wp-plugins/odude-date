@@ -6,7 +6,7 @@
 Plugin Name: ODude Date (Calendar)
 Plugin URI: http://odude.com/
 Description: Listing events as calendar.
-Version: 1.1.0
+Version: 1.1.1
 Author: ODude Network
 Author URI: http://odude.com/
 License: GPLv2 or later
@@ -29,7 +29,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-define( 'ODUDEDATE_VERSION', '1.1.0' );
+define( 'ODUDEDATE_VERSION', '1.1.1' );
 define( 'ODUDEDATE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ODUDEDATE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ODUDEDATE_TEMPLATES_PATH', ODUDEDATE_PLUGIN_DIR . 'templates' );
