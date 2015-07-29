@@ -66,13 +66,13 @@ function odudedate_setting()
 		if(get_option('xmlon')=='on')
 		{
 			$uploaddir = wp_upload_dir();
-			$path = $uploaddir['baseurl'].'/odude-date/'.get_option('xmlpwd').'.xml';
+			$path = $uploaddir['baseurl'].'/odude-date/'.get_option('xmlpwd').'.ics';
 			echo $path;
 			
 		}
 		else
 		{
-			echo "XML creation is disabled";
+			echo "icalendar creation is disabled";
 		}
 		?>
 		</td></tr>		

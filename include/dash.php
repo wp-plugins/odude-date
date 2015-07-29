@@ -40,7 +40,7 @@ function odudedate_xml($country)
 //$rssfeed .= "X-WR-TIMEZONE:Asia/Katmandu\r\n";
 	//loooop
 	
-	$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE (country='%%%s%%' or country='all') and Publish='1' ORDER BY id DESC limit 0,5 ",array($term));
+	$sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."odudedate WHERE (country='%%%s%%' or country='all') and Publish='1' ORDER BY id DESC limit 0,5000 ",array($term));
 	$getgalimages = $wpdb->get_results($sql);
 		if(count($getgalimages))
 				{
